@@ -16,7 +16,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("join")
+    @PostMapping("signup")
     public String addUser(@Valid @RequestBody UserRequest request) {
         // email 중복 검사
         userService.isDuplicateEmail(request.getEmail());
