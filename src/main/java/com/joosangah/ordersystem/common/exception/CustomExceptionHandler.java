@@ -20,7 +20,8 @@ public class CustomExceptionHandler {
     public ResponseEntity<Object> handleMaxSizeException(MaxUploadSizeExceededException exc) {
         long maxUploadSize = exc.getMaxUploadSize();
         return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
-                .body(String.format("File size exceeds the limit of %s", maxUploadSize == -1 ? maxFileSize : maxUploadSize));
+                .body(String.format("File size exceeds the limit of %s",
+                        maxUploadSize == -1 ? maxFileSize : maxUploadSize));
     }
 
     @ExceptionHandler(value = TokenRefreshException.class)
@@ -28,6 +29,13 @@ public class CustomExceptionHandler {
     public ResponseEntity<Object> handleTokenRefreshException(TokenRefreshException ex,
             WebRequest request) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(ex.getMessage());
+    }
+
+    @ExceptionHandler(DuplicateException.class)
+    public ResponseEntity<Object> handleDuplicateUserIdException(
+            DuplicateException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(ex.getMessage());
     }
 }
