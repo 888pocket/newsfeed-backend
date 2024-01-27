@@ -1,8 +1,5 @@
 package com.joosangah.ordersystem.auth.security;
 
-import static com.joosangah.ordersystem.auth.domain.enums.ERole.ADMIN;
-import static com.joosangah.ordersystem.auth.domain.enums.ERole.MODERATOR;
-
 import com.joosangah.ordersystem.auth.security.jwt.AuthEntryPointJwt;
 import com.joosangah.ordersystem.auth.security.jwt.AuthTokenFilter;
 import com.joosangah.ordersystem.auth.security.service.UserDetailsServiceImpl;
@@ -68,8 +65,8 @@ public class WebSecurityConfig {
                         SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authorizeRequests) ->
                         authorizeRequests
-                                .requestMatchers("/posts/**", "/api/v1/posts/**").hasRole(MODERATOR.name())
-                                .requestMatchers("/admin/**").hasRole(ADMIN.name())
+                                .requestMatchers("/posts/**", "/api/v1/posts/**").hasRole("USER")
+                                .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/error").permitAll()
                                 .anyRequest().permitAll()
                 )

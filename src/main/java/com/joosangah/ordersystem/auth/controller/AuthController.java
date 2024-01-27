@@ -6,17 +6,19 @@ import com.joosangah.ordersystem.auth.security.payload.request.LoginRequest;
 import com.joosangah.ordersystem.auth.security.payload.request.TokenRefreshRequest;
 import com.joosangah.ordersystem.auth.security.payload.response.JwtResponse;
 import com.joosangah.ordersystem.auth.security.payload.response.TokenRefreshResponse;
-import com.joosangah.ordersystem.auth.security.service.UserDetailsImpl;
 import com.joosangah.ordersystem.auth.service.RefreshTokenService;
 import com.joosangah.ordersystem.common.exception.TokenRefreshException;
+import com.joosangah.ordersystem.user.domain.entity.User;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,7 +46,7 @@ public class AuthController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+        User userDetails = (User) authentication.getPrincipal();
 
         String jwt = jwtUtils.generateJwtToken(userDetails);
 
@@ -59,7 +61,7 @@ public class AuthController {
     }
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<?> refreshtoken(@Valid @RequestBody TokenRefreshRequest request) {
+    public ResponseEntity<?> refreshToken(@Valid @RequestBody TokenRefreshRequest request) {
         String requestRefreshToken = request.getRefreshToken();
 
         return refreshTokenService.findByToken(requestRefreshToken)

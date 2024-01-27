@@ -40,7 +40,7 @@ public class UserService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .profileImage("profile-image/img_profile-dummy.png")
                 .roles(new HashSet<>(Collections.singletonList(
-                        roleService.loadRole(ERole.USER.getAuthority())))).build();
+                        roleService.loadRole(ERole.ROLE_USER.getAuthority())))).build();
         userRepository.save(newUser);
     }
 
