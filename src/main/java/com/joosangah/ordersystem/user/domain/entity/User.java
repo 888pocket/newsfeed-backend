@@ -1,6 +1,7 @@
 package com.joosangah.ordersystem.user.domain.entity;
 
 import com.joosangah.ordersystem.auth.domain.entity.Role;
+import com.joosangah.ordersystem.user.domain.dto.request.UserForm;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import java.time.LocalDateTime;
@@ -11,7 +12,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -42,8 +45,10 @@ public class User implements UserDetails {
     @Field("remember_token")
     private String rememberToken;
     @Field("created_at")
+    @CreatedDate
     private LocalDateTime createdAt;
     @Field("updated_at")
+    @LastModifiedDate
     private LocalDateTime updatedAt;
 
     @DBRef
@@ -96,5 +101,20 @@ public class User implements UserDetails {
         }
         User user = (User) o;
         return Objects.equals(id, user.id);
+    }
+
+    public User modify(UserForm request) {
+        if(request.getName() != null) {
+            this.name = request.getName();
+        }
+        this.introduction = request.getIntroduction();
+
+        return this;
+    }
+
+    public User modifyProfileImage(String url) {
+        this.profileImage = url;
+
+        return this;
     }
 }
