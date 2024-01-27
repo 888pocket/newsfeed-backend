@@ -70,6 +70,6 @@ public class AuthController {
                     return ResponseEntity.ok(new TokenRefreshResponse(token, requestRefreshToken));
                 })
                 .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
-                        "Refresh token is not in database!"));
+                        "Refresh token is not in database"));
     }
 }
