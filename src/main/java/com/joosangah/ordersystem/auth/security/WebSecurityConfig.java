@@ -60,9 +60,12 @@ public class WebSecurityConfig {
                 .csrf((csrfConfig) ->
                         csrfConfig.disable()
                 )
-                .exceptionHandling((httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(unauthorizedHandler)))
-                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
-                        SessionCreationPolicy.STATELESS))
+                .exceptionHandling(
+                        (httpSecurityExceptionHandlingConfigurer -> httpSecurityExceptionHandlingConfigurer.authenticationEntryPoint(
+                                unauthorizedHandler)))
+                .sessionManagement(
+                        httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authorizeRequests) ->
                         authorizeRequests
                                 .requestMatchers("/posts/**", "/api/v1/posts/**").hasRole("USER")
@@ -71,7 +74,8 @@ public class WebSecurityConfig {
                                 .anyRequest().permitAll()
                 )
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(authenticationJwtTokenFilter(),
+                        UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

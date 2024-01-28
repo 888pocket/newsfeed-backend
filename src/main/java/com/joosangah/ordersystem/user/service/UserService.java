@@ -3,6 +3,7 @@ package com.joosangah.ordersystem.user.service;
 import com.joosangah.ordersystem.auth.domain.enums.ERole;
 import com.joosangah.ordersystem.auth.security.WebSecurityConfig;
 import com.joosangah.ordersystem.auth.service.RoleService;
+import com.joosangah.ordersystem.common.exception.DuplicateException;
 import com.joosangah.ordersystem.file.service.FileService;
 import com.joosangah.ordersystem.user.domain.dto.request.SignupRequest;
 import com.joosangah.ordersystem.user.domain.dto.request.UserForm;
@@ -28,8 +29,8 @@ public class UserService {
 
     private final WebSecurityConfig webSecurityConfig;
 
-    public User loadUser(String id) {
-        return userRepository.findById(id).orElseThrow(NoSuchElementException::new);
+    public User loadUser(String userId) {
+        return userRepository.findById(userId).orElseThrow(NoSuchElementException::new);
     }
 
     public void addUser(SignupRequest request) {
@@ -44,8 +45,10 @@ public class UserService {
         userRepository.save(newUser);
     }
 
-    public Boolean isDuplicateEmail(String email) {
-        return userRepository.findByEmail(email).isPresent();
+    public void verifyEmail(String email) {
+        if (userRepository.findByEmail(email).isPresent()) {
+            throw new DuplicateException();
+        }
     }
 
     @Transactional
