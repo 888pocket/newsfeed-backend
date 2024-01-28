@@ -1,15 +1,17 @@
 package com.joosangah.ordersystem.user.controller;
 
-import com.joosangah.ordersystem.common.exception.DuplicateException;
+import com.joosangah.ordersystem.file.service.FileService;
 import com.joosangah.ordersystem.user.domain.dto.request.SignupRequest;
 import com.joosangah.ordersystem.user.domain.dto.request.UserForm;
+import com.joosangah.ordersystem.user.domain.dto.response.UserResponse;
 import com.joosangah.ordersystem.user.domain.entity.User;
 import com.joosangah.ordersystem.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,21 +26,31 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController {
 
     private final UserService userService;
+    private final FileService fileService;
 
     @PostMapping("/signup")
     public void addUser(@Valid @RequestBody SignupRequest request) {
         // email 중복 검사
-        if (userService.isDuplicateEmail(request.getEmail())) {
-            throw new DuplicateException();
-        }
+        userService.verifyEmail(request.getEmail());
         userService.addUser(request);
     }
 
-    @PutMapping("/{userId}")
-//    @PreAuthorize("hasRole('USER')")
-    public void modifyUser(@AuthenticationPrincipal User member, @PathVariable String userId,
+    @GetMapping
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public UserResponse loadUser(@AuthenticationPrincipal User user) {
+        return UserResponse.builder()
+                .name(user.getName())
+                .email(user.getEmail())
+                .profileImageUrl(fileService.getFullUrl(user.getProfileImage()))
+                .introduction(user.getIntroduction())
+                .createdAt(user.getCreatedAt()).build();
+    }
+
+    @PutMapping
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public void modifyUser(@AuthenticationPrincipal User user,
             @Valid @ModelAttribute UserForm request,
             @RequestParam(required = false) MultipartFile profileImageFile) {
-        userService.modifyUser(userId, request, profileImageFile);
+        userService.modifyUser(user.getId(), request, profileImageFile);
     }
 }
