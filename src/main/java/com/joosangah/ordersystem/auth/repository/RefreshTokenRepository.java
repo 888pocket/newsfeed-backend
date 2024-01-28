@@ -14,4 +14,7 @@ public interface RefreshTokenRepository extends MongoRepository<RefreshToken, Lo
 
     @Modifying
     int deleteByUser(User user);
+
+    @Modifying
+    int deleteByToken(String token);
 }
