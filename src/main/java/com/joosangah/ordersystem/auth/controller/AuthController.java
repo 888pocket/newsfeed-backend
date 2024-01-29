@@ -6,14 +6,16 @@ import com.joosangah.ordersystem.auth.security.payload.request.LoginRequest;
 import com.joosangah.ordersystem.auth.security.payload.request.TokenRefreshRequest;
 import com.joosangah.ordersystem.auth.security.payload.response.JwtResponse;
 import com.joosangah.ordersystem.auth.security.payload.response.TokenRefreshResponse;
+import com.joosangah.ordersystem.auth.service.BlackListTokenService;
 import com.joosangah.ordersystem.auth.service.RefreshTokenService;
 import com.joosangah.ordersystem.common.exception.TokenRefreshException;
 import com.joosangah.ordersystem.user.domain.entity.User;
 import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,17 +26,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/auth")
 public class AuthController {
 
-    @Autowired
-    AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    JwtUtils jwtUtils;
+    private final JwtUtils jwtUtils;
 
-    @Autowired
-    RefreshTokenService refreshTokenService;
+    private final RefreshTokenService refreshTokenService;
+    private final BlackListTokenService blackListTokenService;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -75,5 +76,12 @@ public class AuthController {
                 })
                 .orElseThrow(() -> new TokenRefreshException(requestRefreshToken,
                         "Refresh token is not in database"));
+    }
+
+    @PostMapping("/signout")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public void signOut(@RequestBody String refreshToken) {
+        SecurityContextHolder.clearContext();
+        refreshTokenService.deleteByToken(refreshToken);
     }
 }
