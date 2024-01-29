@@ -2,6 +2,7 @@ package com.joosangah.ordersystem.interaction.service;
 
 import com.joosangah.ordersystem.interaction.domain.entity.Interaction;
 import com.joosangah.ordersystem.interaction.repository.InteractionRepository;
+import com.joosangah.ordersystem.post.service.PostService;
 import com.joosangah.ordersystem.user.domain.enums.InteractionType;
 import com.joosangah.ordersystem.user.service.UserService;
 import java.util.Optional;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class InteractionService {
 
     private final UserService userService;
+    private final PostService postService;
 
     private final InteractionRepository interactionRepository;
 
@@ -36,15 +38,9 @@ public class InteractionService {
 
     private void verifyTarget(String targetId, InteractionType type) {
         switch (type) {
-            case FOLLOW -> {
-                userService.loadUser(targetId);
-                break;
-            }
-            case LIKE_POST -> {
-                break;
-            }
+            case FOLLOW -> userService.loadUser(targetId);
+            case LIKE_POST -> postService.loadPost(targetId);
             case LIKE_COMMENT -> {
-                break;
             }
         }
     }
