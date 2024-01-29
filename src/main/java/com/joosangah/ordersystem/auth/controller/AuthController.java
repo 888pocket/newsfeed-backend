@@ -6,7 +6,7 @@ import com.joosangah.ordersystem.auth.security.payload.request.LoginRequest;
 import com.joosangah.ordersystem.auth.security.payload.request.TokenRefreshRequest;
 import com.joosangah.ordersystem.auth.security.payload.response.JwtResponse;
 import com.joosangah.ordersystem.auth.security.payload.response.TokenRefreshResponse;
-import com.joosangah.ordersystem.auth.service.BlackListTokenService;
+import com.joosangah.ordersystem.auth.service.BlackListService;
 import com.joosangah.ordersystem.auth.service.RefreshTokenService;
 import com.joosangah.ordersystem.common.exception.TokenRefreshException;
 import com.joosangah.ordersystem.user.domain.entity.User;
@@ -19,6 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,7 +36,7 @@ public class AuthController {
     private final JwtUtils jwtUtils;
 
     private final RefreshTokenService refreshTokenService;
-    private final BlackListTokenService blackListTokenService;
+    private final BlackListService blackListService;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -53,6 +54,8 @@ public class AuthController {
                 .collect(Collectors.toList());
 
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
+
+        blackListService.deleteBlacklist(userDetails.getId());
 
         return ResponseEntity.ok(
                 new JwtResponse(jwt, refreshToken.getToken(), userDetails.getId(),
@@ -83,5 +86,13 @@ public class AuthController {
     public void signOut(@RequestBody String refreshToken) {
         SecurityContextHolder.clearContext();
         refreshTokenService.deleteByToken(refreshToken);
+    }
+
+    @PostMapping("/signout-all")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public void signOutAll(@AuthenticationPrincipal User user) {
+        SecurityContextHolder.clearContext();
+        refreshTokenService.deleteByUserId(user.getId());
+        blackListService.addBlacklist(user.getId());
     }
 }
