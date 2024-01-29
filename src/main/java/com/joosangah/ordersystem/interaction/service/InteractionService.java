@@ -1,5 +1,6 @@
 package com.joosangah.ordersystem.interaction.service;
 
+import com.joosangah.ordersystem.comment.service.CommentService;
 import com.joosangah.ordersystem.interaction.domain.entity.Interaction;
 import com.joosangah.ordersystem.interaction.repository.InteractionRepository;
 import com.joosangah.ordersystem.post.service.PostService;
@@ -16,6 +17,7 @@ public class InteractionService {
 
     private final UserService userService;
     private final PostService postService;
+    private final CommentService commentService;
 
     private final InteractionRepository interactionRepository;
 
@@ -40,8 +42,7 @@ public class InteractionService {
         switch (type) {
             case FOLLOW -> userService.loadUser(targetId);
             case LIKE_POST -> postService.loadPost(targetId);
-            case LIKE_COMMENT -> {
-            }
+            case LIKE_COMMENT -> commentService.loadComment(targetId);
         }
     }
 }

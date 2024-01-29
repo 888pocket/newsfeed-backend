@@ -7,6 +7,7 @@ import com.joosangah.ordersystem.post.domain.entity.Post;
 import com.joosangah.ordersystem.post.repository.PostRepository;
 import com.joosangah.ordersystem.post.service.PostService;
 import com.joosangah.ordersystem.user.domain.entity.User;
+import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,10 @@ public class CommentService {
 
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
+
+    public Comment loadComment(String commentId) {
+        return commentRepository.findById(commentId).orElseThrow(NoSuchElementException::new);
+    }
 
     @Transactional
     public void addComment(User user, String targetId, CommentForm commentForm) {
