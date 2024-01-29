@@ -5,6 +5,7 @@ import com.joosangah.ordersystem.auth.security.WebSecurityConfig;
 import com.joosangah.ordersystem.auth.service.RoleService;
 import com.joosangah.ordersystem.common.exception.DuplicateException;
 import com.joosangah.ordersystem.file.service.FileService;
+import com.joosangah.ordersystem.user.domain.dto.request.PasswordForm;
 import com.joosangah.ordersystem.user.domain.dto.request.SignupRequest;
 import com.joosangah.ordersystem.user.domain.dto.request.UserForm;
 import com.joosangah.ordersystem.user.domain.entity.User;
@@ -65,6 +66,16 @@ public class UserService {
         }
 
         findUser.modifyProfileImage(fileUrl);
+
+        userRepository.save(findUser);
+    }
+
+    @Transactional
+    public void modifyPassword(String userId, PasswordForm request) {
+        PasswordEncoder passwordEncoder = webSecurityConfig.passwordEncoder();
+
+        User findUser = loadUser(userId);
+        findUser.modifyPassword(passwordEncoder.encode(request.getPassword()));
 
         userRepository.save(findUser);
     }

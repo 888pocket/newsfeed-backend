@@ -1,6 +1,8 @@
 package com.joosangah.ordersystem.user.controller;
 
+import com.joosangah.ordersystem.auth.service.BlackListService;
 import com.joosangah.ordersystem.file.service.FileService;
+import com.joosangah.ordersystem.user.domain.dto.request.PasswordForm;
 import com.joosangah.ordersystem.user.domain.dto.request.SignupRequest;
 import com.joosangah.ordersystem.user.domain.dto.request.UserForm;
 import com.joosangah.ordersystem.user.domain.dto.response.UserResponse;
@@ -27,6 +29,7 @@ public class UserController {
 
     private final UserService userService;
     private final FileService fileService;
+    private final BlackListService blackListService;
 
     @PostMapping("/signup")
     public void addUser(@Valid @RequestBody SignupRequest request) {
@@ -52,5 +55,15 @@ public class UserController {
             @Valid @ModelAttribute UserForm request,
             @RequestParam(required = false) MultipartFile profileImageFile) {
         userService.modifyUser(user.getId(), request, profileImageFile);
+    }
+
+    @PutMapping("/password")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public void modifyPassword(@AuthenticationPrincipal User user,
+            @Valid @RequestBody PasswordForm request) {
+        userService.modifyPassword(user.getId(), request);
+
+        // 모든 기기에서 로그아웃
+        blackListService.addBlacklist(user.getId());
     }
 }

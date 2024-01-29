@@ -116,4 +116,10 @@ public class User implements UserDetails {
 
         return this;
     }
+
+    public User modifyPassword(String password) {
+        this.password = password;
+
+        return this;
+    }
 }
