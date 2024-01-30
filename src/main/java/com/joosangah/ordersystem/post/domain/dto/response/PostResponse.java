@@ -10,6 +10,7 @@ import lombok.Getter;
 public class PostResponse {
 
     private UserResponse user;
+    private String title;
     private String content;
     private LocalDateTime createdAt;
 }
