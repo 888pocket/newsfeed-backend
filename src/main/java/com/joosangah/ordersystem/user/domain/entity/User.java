@@ -122,4 +122,8 @@ public class User implements UserDetails {
 
         return this;
     }
+
+    public void verifyEmail() {
+        this.emailVerifiedAt = LocalDateTime.now();
+    }
 }

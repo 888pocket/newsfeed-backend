@@ -19,7 +19,7 @@ public class AuditEntity {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    @Field("created_by")
+    @Field("updated_by")
     @LastModifiedBy
     private String updatedBy;
 

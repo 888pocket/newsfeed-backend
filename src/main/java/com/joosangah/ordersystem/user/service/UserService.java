@@ -4,12 +4,16 @@ import com.joosangah.ordersystem.auth.domain.enums.ERole;
 import com.joosangah.ordersystem.auth.security.WebSecurityConfig;
 import com.joosangah.ordersystem.auth.service.RoleService;
 import com.joosangah.ordersystem.common.exception.DuplicateException;
+import com.joosangah.ordersystem.common.service.MailService;
+import com.joosangah.ordersystem.common.util.TokenGenerator;
 import com.joosangah.ordersystem.file.service.FileService;
 import com.joosangah.ordersystem.user.domain.dto.request.PasswordForm;
 import com.joosangah.ordersystem.user.domain.dto.request.SignupRequest;
 import com.joosangah.ordersystem.user.domain.dto.request.UserForm;
 import com.joosangah.ordersystem.user.domain.entity.User;
+import com.joosangah.ordersystem.user.domain.entity.VerificationToken;
 import com.joosangah.ordersystem.user.repository.UserRepository;
+import com.joosangah.ordersystem.user.repository.VerificationTokenRepository;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
@@ -24,9 +28,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final VerificationTokenRepository verificationTokenRepository;
+
 
     private final RoleService roleService;
     private final FileService fileService;
+    private final MailService mailService;
 
     private final WebSecurityConfig webSecurityConfig;
 
@@ -77,6 +84,25 @@ public class UserService {
         User findUser = loadUser(userId);
         findUser.modifyPassword(passwordEncoder.encode(request.getPassword()));
 
+        userRepository.save(findUser);
+    }
+
+    @Transactional
+    public void sendVerifyEmail(User user) {
+        VerificationToken token = new VerificationToken(user.getId(),
+                TokenGenerator.generateCode());
+        verificationTokenRepository.save(token);
+        mailService.sendEmail(user.getEmail(), "인증코드 발송",
+                "인증하기 -> http://localhost:8080/user/verify/emil?token=" + token.getToken()
+                        + " 클릭");
+    }
+
+    @Transactional
+    public void confirmEmailVerification(String token) {
+        VerificationToken verificationToken = verificationTokenRepository.findByToken(token)
+                .orElseThrow(NoSuchElementException::new);
+        User findUser = loadUser(verificationToken.getUserId());
+        findUser.verifyEmail();
         userRepository.save(findUser);
     }
 }

@@ -66,4 +66,15 @@ public class UserController {
         // 모든 기기에서 로그아웃
         blackListService.addBlacklist(user.getId());
     }
+
+    @PostMapping("/verify/request")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public void sendVerifyEmail(@AuthenticationPrincipal User user) {
+        userService.sendVerifyEmail(user);
+    }
+
+    @GetMapping("/verify/email")
+    public void verifyEmail(@RequestParam String token) {
+        userService.confirmEmailVerification(token);
+    }
 }
