@@ -1,19 +1,19 @@
 package com.joosangah.ordersystem.comment.domain.entity;
 
+import com.joosangah.ordersystem.common.domain.AuditEntity;
 import com.joosangah.ordersystem.user.domain.entity.User;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import java.time.LocalDateTime;
 import lombok.Builder;
-import org.springframework.data.annotation.CreatedDate;
+import lombok.Getter;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "comments")
-public class Comment {
+@Getter
+public class Comment extends AuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,12 +25,6 @@ public class Comment {
     private String content;
     @Field("is_deleted")
     private boolean deleted;
-    @Field("created_at")
-    @CreatedDate
-    private LocalDateTime createdAt;
-    @Field("updated_at")
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
 
     @Builder
     public Comment(User user, String targetId, String content, boolean deleted) {

@@ -7,7 +7,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface InteractionRepository extends MongoRepository<Interaction, String> {
+public interface InteractionRepository extends MongoRepository<Interaction, String>,
+        InteractionCustomRepository {
 
     Optional<Interaction> findByUserIdAndTargetIdAndType(String userId, String targetId,
             InteractionType type);
