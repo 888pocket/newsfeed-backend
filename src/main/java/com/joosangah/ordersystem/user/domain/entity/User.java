@@ -1,6 +1,7 @@
 package com.joosangah.ordersystem.user.domain.entity;
 
 import com.joosangah.ordersystem.auth.domain.entity.Role;
+import com.joosangah.ordersystem.common.domain.AuditEntity;
 import com.joosangah.ordersystem.user.domain.dto.request.UserForm;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,9 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -26,7 +25,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Document(collection = "users")
 @Getter
-public class User implements UserDetails {
+public class User extends AuditEntity implements UserDetails {
 
     private static final long serialVersionUID = 1L;
 
@@ -44,12 +43,6 @@ public class User implements UserDetails {
     private String introduction;
     @Field("remember_token")
     private String rememberToken;
-    @Field("created_at")
-    @CreatedDate
-    private LocalDateTime createdAt;
-    @Field("updated_at")
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
 
     @DBRef
     private Set<Role> roles;
