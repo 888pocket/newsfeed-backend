@@ -2,6 +2,7 @@ package com.joosangah.ordersystem.post.domain.entity;
 
 import com.joosangah.ordersystem.comment.domain.entity.Comment;
 import com.joosangah.ordersystem.common.domain.AuditEntity;
+import com.joosangah.ordersystem.likes.domain.entity.Like;
 import com.joosangah.ordersystem.user.domain.entity.User;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -31,15 +32,14 @@ public class Post extends AuditEntity {
     @DBRef
     private List<Comment> commentList;
     @DBRef
-    private List<User> likeUserList;
+    private List<Like> likeList;
 
     @Builder
-    public Post(User user, String title, String content, boolean deleted) {
+    public Post(User user, String title, String content) {
         this.user = user;
         this.title = title;
         this.content = content;
-        this.deleted = deleted;
         this.commentList = new ArrayList<>();
-        this.likeUserList = new ArrayList<>();
+        this.likeList = new ArrayList<>();
     }
 }

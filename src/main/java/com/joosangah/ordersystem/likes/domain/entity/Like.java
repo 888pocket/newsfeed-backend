@@ -1,44 +1,36 @@
-package com.joosangah.ordersystem.comment.domain.entity;
+package com.joosangah.ordersystem.likes.domain.entity;
 
 import com.joosangah.ordersystem.common.domain.AuditEntity;
-import com.joosangah.ordersystem.likes.domain.entity.Like;
+import com.joosangah.ordersystem.likes.domain.enums.LikeType;
 import com.joosangah.ordersystem.user.domain.entity.User;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Builder;
-import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-@Document(collection = "comments")
-@Getter
-public class Comment extends AuditEntity {
+@Document(collection = "likes")
+public class Like extends AuditEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String id;
     @DBRef
     private User user;
+    @DBRef
     @Field("target_user")
-    @DBRef
     private User targetUser;
-    private String content;
-    @Field("is_deleted")
-    private boolean deleted;
-
-    @DBRef
-    private List<Like> likeList;
+    @Enumerated(EnumType.STRING)
+    private LikeType type;
 
     @Builder
-    public Comment(User user, User targetUser, String content, boolean deleted) {
+    public Like(User user, User targetUser, LikeType type) {
         this.user = user;
         this.targetUser = targetUser;
-        this.content = content;
-        this.deleted = deleted;
-        this.likeList = new ArrayList<>();
+        this.type = type;
     }
 }
