@@ -38,4 +38,10 @@ public class PostController {
     public void deletePost(@AuthenticationPrincipal User user, @PathVariable String postId) {
         postService.softDelete(user.getId(), postId);
     }
+
+    @PostMapping("/{postId}/like/toggle")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public boolean toggleLike(@AuthenticationPrincipal User user, @PathVariable String postId) {
+        return postService.toggleLike(user, postId);
+    }
 }

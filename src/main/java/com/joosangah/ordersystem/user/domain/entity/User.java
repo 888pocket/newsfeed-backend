@@ -5,7 +5,9 @@ import com.joosangah.ordersystem.user.domain.dto.request.UserForm;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,7 +26,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 @Document(collection = "users")
 @Getter
-@Builder
 public class User implements UserDetails {
 
     private static final long serialVersionUID = 1L;
@@ -52,6 +53,23 @@ public class User implements UserDetails {
 
     @DBRef
     private Set<Role> roles;
+
+    @DBRef
+    private List<User> followerList;
+
+    @Builder
+    public User(String name, String email, LocalDateTime emailVerifiedAt, String password,
+            String profileImage, String introduction, String rememberToken, Set<Role> roles) {
+        this.name = name;
+        this.email = email;
+        this.emailVerifiedAt = emailVerifiedAt;
+        this.password = password;
+        this.profileImage = profileImage;
+        this.introduction = introduction;
+        this.rememberToken = rememberToken;
+        this.roles = roles;
+        this.followerList = new ArrayList<>();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

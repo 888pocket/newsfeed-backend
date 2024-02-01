@@ -7,6 +7,7 @@ import com.joosangah.ordersystem.common.exception.DuplicateException;
 import com.joosangah.ordersystem.common.service.MailService;
 import com.joosangah.ordersystem.common.util.TokenGenerator;
 import com.joosangah.ordersystem.file.service.FileService;
+import com.joosangah.ordersystem.newsfeed.service.NewsfeedService;
 import com.joosangah.ordersystem.user.domain.dto.request.PasswordForm;
 import com.joosangah.ordersystem.user.domain.dto.request.SignupRequest;
 import com.joosangah.ordersystem.user.domain.dto.request.UserForm;
@@ -34,6 +35,7 @@ public class UserService {
     private final RoleService roleService;
     private final FileService fileService;
     private final MailService mailService;
+    private final NewsfeedService newsfeedService;
 
     private final WebSecurityConfig webSecurityConfig;
 
@@ -104,5 +106,20 @@ public class UserService {
         User findUser = loadUser(verificationToken.getUserId());
         findUser.verifyEmail();
         userRepository.save(findUser);
+    }
+
+    public boolean toggleFollow(User user, String followId) {
+        User follow = loadUser(followId);
+        if(follow.getFollowerList().contains(user)) {
+            follow.getFollowerList().remove(user);
+            userRepository.save(follow);
+            return false;
+        }
+
+        follow.getFollowerList().add(user);
+        userRepository.save(follow);
+
+        newsfeedService.addFollowNews(user, follow);
+        return true;
     }
 }
