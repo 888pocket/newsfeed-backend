@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,7 +45,7 @@ public class UserController {
         return UserResponse.builder()
                 .name(user.getName())
                 .email(user.getEmail())
-                .profileImageUrl(fileService.getFullUrl(user.getProfileImage()))
+                .profileImage(fileService.getFullUrl(user.getProfileImage()))
                 .introduction(user.getIntroduction())
                 .createdAt(user.getCreatedAt()).build();
     }
@@ -76,5 +77,11 @@ public class UserController {
     @GetMapping("/verify/email")
     public void verifyEmail(@RequestParam String token) {
         userService.confirmEmailVerification(token);
+    }
+
+    @PostMapping("/{userId}/follow/toggle")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public boolean followToggle(@AuthenticationPrincipal User user, @PathVariable String userId) {
+        return userService.toggleFollow(user, userId);
     }
 }

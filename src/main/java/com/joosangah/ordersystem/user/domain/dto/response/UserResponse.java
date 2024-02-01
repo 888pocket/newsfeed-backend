@@ -10,7 +10,7 @@ public class UserResponse {
 
     private String name;
     private String email;
-    private String profileImageUrl;
+    private String profileImage;
     private String introduction;
     private LocalDateTime createdAt;
 }
