@@ -1,5 +1,6 @@
 package com.joosangah.activityservice.post.controller;
 
+import com.joosangah.activityservice.UserFeignService;
 import com.joosangah.activityservice.common.domain.User;
 import com.joosangah.activityservice.post.domain.dto.request.PostForm;
 import com.joosangah.activityservice.post.domain.dto.response.PostResponse;
@@ -20,10 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostController {
 
     private final PostService postService;
+    private final UserFeignService userFeignService;
 
     @PostMapping
     public String addPost(@RequestBody PostForm postForm) {
-        User user = User.builder().build();
+        User user = userFeignService.getUser();
         return postService.addPost(user, postForm);
     }
 
@@ -34,13 +36,13 @@ public class PostController {
 
     @DeleteMapping("/{postId}")
     public void deletePost(@PathVariable String postId) throws AccessDeniedException {
-        User user = User.builder().build();
+        User user = userFeignService.getUser();
         postService.softDelete(user.getId(), postId);
     }
 
     @PostMapping("/{postId}/like/toggle")
     public boolean toggleLike(@PathVariable String postId) {
-        User user = User.builder().build();
+        User user = userFeignService.getUser();
         return postService.toggleLike(user.getId(), postId);
     }
 }

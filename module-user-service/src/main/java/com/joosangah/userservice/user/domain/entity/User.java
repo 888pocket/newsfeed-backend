@@ -47,8 +47,7 @@ public class User extends AuditEntity implements UserDetails {
     @DBRef
     private Set<Role> roles;
 
-    @DBRef
-    private List<User> followerList;
+    private List<String> followerIdList;
 
     @Builder
     public User(String name, String email, LocalDateTime emailVerifiedAt, String password,
@@ -61,7 +60,7 @@ public class User extends AuditEntity implements UserDetails {
         this.introduction = introduction;
         this.rememberToken = rememberToken;
         this.roles = roles;
-        this.followerList = new ArrayList<>();
+        this.followerIdList = new ArrayList<>();
     }
 
     @Override

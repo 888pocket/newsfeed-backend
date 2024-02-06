@@ -84,4 +84,9 @@ public class UserController {
     public boolean followToggle(@AuthenticationPrincipal User user, @PathVariable String userId) {
         return userService.toggleFollow(user, userId);
     }
+
+    @GetMapping("/internal")
+    public User loadInternalUser(@AuthenticationPrincipal User user) {
+        return user;
+    }
 }

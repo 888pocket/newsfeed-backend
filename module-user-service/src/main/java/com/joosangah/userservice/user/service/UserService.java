@@ -94,7 +94,7 @@ public class UserService {
                 TokenGenerator.generateCode());
         verificationTokenRepository.save(token);
         mailService.sendEmail(user.getEmail(), "인증코드 발송",
-                "인증하기 -> http://localhost:8080/user/verify/emil?token=" + token.getToken()
+                "인증하기 -> http://localhost:8080/user/verify/email?token=" + token.getToken()
                         + " 클릭");
     }
 
@@ -109,13 +109,13 @@ public class UserService {
 
     public boolean toggleFollow(User user, String followId) {
         User follow = loadUser(followId);
-        if(follow.getFollowerList().contains(user)) {
-            follow.getFollowerList().remove(user);
+        if(follow.getFollowerIdList().contains(user.getId())) {
+            follow.getFollowerIdList().remove(user.getId());
             userRepository.save(follow);
             return false;
         }
 
-        follow.getFollowerList().add(user);
+        follow.getFollowerIdList().add(user.getId());
         userRepository.save(follow);
 
 //        newsfeedService.addFollowNews(user, follow);
