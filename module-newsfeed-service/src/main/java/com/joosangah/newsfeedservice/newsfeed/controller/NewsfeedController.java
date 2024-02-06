@@ -1,5 +1,6 @@
 package com.joosangah.newsfeedservice.newsfeed.controller;
 
+import com.joosangah.newsfeedservice.UserFeignService;
 import com.joosangah.newsfeedservice.common.domain.User;
 import com.joosangah.newsfeedservice.newsfeed.domain.dto.response.NewsfeedResponse;
 import com.joosangah.newsfeedservice.newsfeed.service.NewsfeedService;
@@ -15,10 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class NewsfeedController {
 
     private final NewsfeedService newsfeedService;
+    private final UserFeignService userFeignService;
 
     @GetMapping("/list")
     public List<NewsfeedResponse> loadNewsfeeds() {
-        User user = User.builder().build();
+        User user = userFeignService.getUser();
         return newsfeedService.loadNewsfeeds(user);
     }
 }
