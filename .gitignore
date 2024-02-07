@@ -37,6 +37,5 @@ out/
 .vscode/
 
 docker-compose.yml
-/src/main/resources/application.yml
-/src/main/resources/application_debug.yml
-Dockerfile
+application.yml
+application_debug.yml
