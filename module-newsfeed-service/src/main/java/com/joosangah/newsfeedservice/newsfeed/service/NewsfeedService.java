@@ -50,7 +50,7 @@ public class NewsfeedService {
     }
 
     @Transactional
-    public void addPostNews(User user, String postId) {
+    public void addPostNews(User user, Post post) {
         // 해당 사용자를 팔로우 하는 사람에 알림
         List<Newsfeed> newNewsfeeds = new ArrayList<>();
         for (String follower : user.getFollowerIdList()) {
@@ -59,7 +59,7 @@ public class NewsfeedService {
                     .senderId(user.getId())
                     .type(NewsfeedType.POST)
                     .agentType(AgentType.SENDER)
-                    .postId(postId).build());
+                    .postId(post.getId()).build());
         }
 
         newsfeedRepository.saveAll(newNewsfeeds);

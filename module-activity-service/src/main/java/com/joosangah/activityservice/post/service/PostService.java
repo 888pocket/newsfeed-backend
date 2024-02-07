@@ -1,5 +1,6 @@
 package com.joosangah.activityservice.post.service;
 
+import com.joosangah.activityservice.NewsfeedFeignClient;
 import com.joosangah.activityservice.common.domain.User;
 import com.joosangah.activityservice.post.domain.dto.request.PostForm;
 import com.joosangah.activityservice.post.domain.dto.response.PostResponse;
@@ -22,7 +23,7 @@ public class PostService {
 
     private final MongoTemplate mongoTemplate;
 
-//    private final NewsfeedService newsfeedService;
+    private final NewsfeedFeignClient newsfeedFeignClient;
 
     private final PostResponseMapper postResponseMapper;
 
@@ -52,7 +53,7 @@ public class PostService {
 
         postRepository.save(newPost);
 
-//        newsfeedService.addPostNews(user, newPost);
+        newsfeedFeignClient.addPostNews(newPost);
 
         return newPost.getId();
     }
@@ -81,7 +82,9 @@ public class PostService {
 
         findPost.getLikeUserIdList().add(userId);
         postRepository.save(findPost);
-//        newsfeedService.addLikeNews(userId, findPost);
+
+        newsfeedFeignClient.addLikeNews(findPost);
+
         return true;
     }
 }

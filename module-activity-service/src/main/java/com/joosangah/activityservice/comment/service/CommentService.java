@@ -1,5 +1,6 @@
 package com.joosangah.activityservice.comment.service;
 
+import com.joosangah.activityservice.NewsfeedFeignClient;
 import com.joosangah.activityservice.comment.domain.dto.request.CommentForm;
 import com.joosangah.activityservice.comment.domain.entity.Comment;
 import com.joosangah.activityservice.comment.repository.CommentRepository;
@@ -16,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentService {
 
     private final PostService postService;
-//    private final NewsfeedService newsfeedService;
+    private final NewsfeedFeignClient newsfeedFeignClient;
 
     private final CommentRepository commentRepository;
 
@@ -38,6 +39,6 @@ public class CommentService {
 
         postService.savePost(findPost);
 
-//        newsfeedService.addCommentNews(user, findPost);
+        newsfeedFeignClient.addCommentNews(findPost);
     }
 }
