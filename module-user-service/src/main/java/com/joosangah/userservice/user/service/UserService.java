@@ -1,12 +1,14 @@
 package com.joosangah.userservice.user.service;
 
-import com.joosangah.userservice.MailService;
+import com.joosangah.userservice.mail.MailService;
+import com.joosangah.userservice.NewsfeedFeignClient;
 import com.joosangah.userservice.auth.domain.enums.ERole;
 import com.joosangah.userservice.auth.security.WebSecurityConfig;
 import com.joosangah.userservice.auth.service.RoleService;
 import com.joosangah.userservice.common.exception.DuplicateException;
 import com.joosangah.userservice.common.util.TokenGenerator;
 import com.joosangah.userservice.file.service.FileService;
+import com.joosangah.userservice.user.domain.dto.request.FollowNewsRequest;
 import com.joosangah.userservice.user.domain.dto.request.PasswordForm;
 import com.joosangah.userservice.user.domain.dto.request.SignupRequest;
 import com.joosangah.userservice.user.domain.dto.request.UserForm;
@@ -34,7 +36,7 @@ public class UserService {
     private final RoleService roleService;
     private final FileService fileService;
     private final MailService mailService;
-//    private final NewsfeedService newsfeedService;
+    private final NewsfeedFeignClient newsfeedFeignClient;
 
     private final WebSecurityConfig webSecurityConfig;
 
@@ -109,7 +111,7 @@ public class UserService {
 
     public boolean toggleFollow(User user, String followId) {
         User follow = loadUser(followId);
-        if(follow.getFollowerIdList().contains(user.getId())) {
+        if (follow.getFollowerIdList().contains(user.getId())) {
             follow.getFollowerIdList().remove(user.getId());
             userRepository.save(follow);
             return false;
@@ -118,7 +120,11 @@ public class UserService {
         follow.getFollowerIdList().add(user.getId());
         userRepository.save(follow);
 
-//        newsfeedService.addFollowNews(user, follow);
+        newsfeedFeignClient.addFollowNews(
+                FollowNewsRequest.builder()
+                        .follower(user)
+                        .follow(follow).build());
+
         return true;
     }
 }

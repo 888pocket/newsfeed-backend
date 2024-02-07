@@ -86,6 +86,7 @@ public class UserController {
     }
 
     @GetMapping("/internal")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public User loadInternalUser(@AuthenticationPrincipal User user) {
         return user;
     }
