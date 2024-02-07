@@ -38,4 +38,4 @@ out/
 
 docker-compose.yml
 application.yml
-application_debug.yml
+application-debug.yml
