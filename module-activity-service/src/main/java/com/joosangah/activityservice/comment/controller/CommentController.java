@@ -1,6 +1,6 @@
 package com.joosangah.activityservice.comment.controller;
 
-import com.joosangah.activityservice.UserFeignClient;
+import com.joosangah.activityservice.common.client.UserFeignClient;
 import com.joosangah.activityservice.comment.domain.dto.request.CommentForm;
 import com.joosangah.activityservice.comment.service.CommentService;
 import com.joosangah.activityservice.common.domain.User;

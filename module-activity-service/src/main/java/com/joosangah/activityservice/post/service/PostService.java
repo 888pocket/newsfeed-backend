@@ -1,6 +1,6 @@
 package com.joosangah.activityservice.post.service;
 
-import com.joosangah.activityservice.NewsfeedFeignClient;
+import com.joosangah.activityservice.common.client.NewsfeedFeignClient;
 import com.joosangah.activityservice.common.domain.User;
 import com.joosangah.activityservice.post.domain.dto.request.PostForm;
 import com.joosangah.activityservice.post.domain.dto.response.PostResponse;

@@ -1,6 +1,6 @@
 package com.joosangah.activityservice.comment.service;
 
-import com.joosangah.activityservice.NewsfeedFeignClient;
+import com.joosangah.activityservice.common.client.NewsfeedFeignClient;
 import com.joosangah.activityservice.comment.domain.dto.request.CommentForm;
 import com.joosangah.activityservice.comment.domain.entity.Comment;
 import com.joosangah.activityservice.comment.repository.CommentRepository;

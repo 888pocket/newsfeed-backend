@@ -1,4 +1,4 @@
-package com.joosangah.activityservice;
+package com.joosangah.userservice.common.client;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;

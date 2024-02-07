@@ -1,6 +1,6 @@
 package com.joosangah.activityservice.post.controller;
 
-import com.joosangah.activityservice.UserFeignClient;
+import com.joosangah.activityservice.common.client.UserFeignClient;
 import com.joosangah.activityservice.common.domain.User;
 import com.joosangah.activityservice.post.domain.dto.request.PostForm;
 import com.joosangah.activityservice.post.domain.dto.response.PostResponse;

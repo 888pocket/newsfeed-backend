@@ -1,6 +1,6 @@
-package com.joosangah.newsfeedservice;
+package com.joosangah.activityservice.common.client;
 
-import com.joosangah.newsfeedservice.common.domain.User;
+import com.joosangah.activityservice.common.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

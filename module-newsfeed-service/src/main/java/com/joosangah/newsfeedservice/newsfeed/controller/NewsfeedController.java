@@ -1,6 +1,6 @@
 package com.joosangah.newsfeedservice.newsfeed.controller;
 
-import com.joosangah.newsfeedservice.UserFeignClient;
+import com.joosangah.newsfeedservice.common.client.UserFeignClient;
 import com.joosangah.newsfeedservice.common.domain.FollowNewsRequest;
 import com.joosangah.newsfeedservice.common.domain.Post;
 import com.joosangah.newsfeedservice.common.domain.User;

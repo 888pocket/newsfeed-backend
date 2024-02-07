@@ -1,4 +1,4 @@
-package com.joosangah.activityservice;
+package com.joosangah.activityservice.common.client;
 
 import com.joosangah.activityservice.post.domain.entity.Post;
 import org.springframework.cloud.openfeign.FeignClient;

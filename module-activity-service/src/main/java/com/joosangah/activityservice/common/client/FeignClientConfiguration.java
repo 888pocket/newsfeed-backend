@@ -1,4 +1,4 @@
-package com.joosangah.newsfeedservice;
+package com.joosangah.activityservice.common.client;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;

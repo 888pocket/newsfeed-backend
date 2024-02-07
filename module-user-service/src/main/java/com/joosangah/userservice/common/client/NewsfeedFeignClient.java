@@ -1,4 +1,4 @@
-package com.joosangah.userservice;
+package com.joosangah.userservice.common.client;
 
 import com.joosangah.userservice.user.domain.dto.request.FollowNewsRequest;
 import org.springframework.cloud.openfeign.FeignClient;

@@ -1,7 +1,7 @@
 package com.joosangah.userservice.user.service;
 
 import com.joosangah.userservice.mail.MailService;
-import com.joosangah.userservice.NewsfeedFeignClient;
+import com.joosangah.userservice.common.client.NewsfeedFeignClient;
 import com.joosangah.userservice.auth.domain.enums.ERole;
 import com.joosangah.userservice.auth.security.WebSecurityConfig;
 import com.joosangah.userservice.auth.service.RoleService;

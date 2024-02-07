@@ -1,4 +1,4 @@
-package com.joosangah.userservice;
+package com.joosangah.userservice.mail;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
