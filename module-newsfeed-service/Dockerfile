@@ -8,4 +8,4 @@ ENV JAVA_DEBUG_OPT="-Xdebug -agentlib:jdwp=transport=dt_socket,server=y,suspend=
 
 CMD java ${JAVA_DEBUG_OPT} -Djava.security.egd=file:/dev/./urandom  -cp .:${APPDIR}/* com.joosangah.newsfeedservice.NewsfeedServiceApplication
 
-EXPOSE 8082 5007
+EXPOSE 8082 5007 8761
