@@ -10,8 +10,6 @@ import com.joosangah.userservice.auth.service.BlackListService;
 import com.joosangah.userservice.auth.service.RefreshTokenService;
 import com.joosangah.userservice.common.exception.TokenRefreshException;
 import com.joosangah.userservice.user.domain.entity.User;
-import java.util.List;
-import java.util.stream.Collectors;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +36,7 @@ public class AuthController {
     private final RefreshTokenService refreshTokenService;
     private final BlackListService blackListService;
 
-    @PostMapping("/signin")
+    @PostMapping("/public/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
@@ -50,8 +48,7 @@ public class AuthController {
 
         String jwt = jwtUtils.generateJwtToken(userDetails);
 
-        List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
-                .collect(Collectors.toList());
+        String role = userDetails.getRole().getAuthority();
 
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
@@ -59,10 +56,10 @@ public class AuthController {
 
         return ResponseEntity.ok(
                 new JwtResponse(jwt, refreshToken.getToken(), userDetails.getId(),
-                        userDetails.getUsername(), userDetails.getEmail(), roles));
+                        userDetails.getUsername(), userDetails.getEmail(), role));
     }
 
-    @PostMapping("/refresh-token")
+    @PostMapping("/public/refresh-token")
     public ResponseEntity<?> refreshToken(@Valid @RequestBody TokenRefreshRequest request) {
         String requestRefreshToken = request.getRefreshToken();
 
@@ -70,7 +67,7 @@ public class AuthController {
                 .map(refreshTokenService::verifyExpiration)
                 .map(RefreshToken::getUser)
                 .map(user -> {
-                    String token = jwtUtils.generateTokenFromEmail(user.getEmail(), user.getRoles());
+                    String token = jwtUtils.generateTokenFromId(user.getId(), user.getRole());
                     refreshTokenService.deleteByToken(requestRefreshToken);
                     RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(
                             user.getId());

@@ -5,11 +5,10 @@ import com.joosangah.userservice.common.domain.AuditEntity;
 import com.joosangah.userservice.user.domain.dto.request.UserForm;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import lombok.Builder;
@@ -43,13 +42,13 @@ public class User extends AuditEntity implements UserDetails {
     @Field("remember_token")
     private String rememberToken;
 
-    private Set<ERole> roles;
+    private ERole role;
 
     private List<String> followerIdList;
 
     @Builder
     public User(String name, String email, LocalDateTime emailVerifiedAt, String password,
-            String profileImage, String introduction, String rememberToken, Set<ERole> roles) {
+            String profileImage, String introduction, String rememberToken, ERole role) {
         this.name = name;
         this.email = email;
         this.emailVerifiedAt = emailVerifiedAt;
@@ -57,15 +56,13 @@ public class User extends AuditEntity implements UserDetails {
         this.profileImage = profileImage;
         this.introduction = introduction;
         this.rememberToken = rememberToken;
-        this.roles = roles;
+        this.role = role;
         this.followerIdList = new ArrayList<>();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getAuthority()))
-                .collect(Collectors.toList());
+        return Arrays.asList(new SimpleGrantedAuthority(role.getAuthority()));
     }
 
     @Override
@@ -111,7 +108,7 @@ public class User extends AuditEntity implements UserDetails {
     }
 
     public User modify(UserForm request) {
-        if(request.getName() != null) {
+        if (request.getName() != null) {
             this.name = request.getName();
         }
         this.introduction = request.getIntroduction();

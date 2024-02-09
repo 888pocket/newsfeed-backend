@@ -10,7 +10,6 @@ import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import java.util.Date;
-import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,16 +27,16 @@ public class JwtUtils {
     private int jwtExpirationMs;
 
     public String generateJwtToken(User userPrincipal) {
-        return generateTokenFromEmail(userPrincipal.getEmail(), userPrincipal.getRoles());
+        return generateTokenFromId(userPrincipal.getId(), userPrincipal.getRole());
     }
 
-    public String generateTokenFromEmail(String email, Set<ERole> roles) {
-        Claims claims = Jwts.claims().setSubject(email);
-        claims.put("roles", roles);
+    public String generateTokenFromId(String id, ERole role) {
+        Claims claims = Jwts.claims().setSubject(id);
+        claims.put("role", role);
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(email)
+                .setSubject(id)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
@@ -67,5 +66,4 @@ public class JwtUtils {
 
         return false;
     }
-
 }

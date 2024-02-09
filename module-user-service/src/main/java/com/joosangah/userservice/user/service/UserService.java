@@ -15,8 +15,6 @@ import com.joosangah.userservice.user.domain.entity.User;
 import com.joosangah.userservice.user.domain.entity.VerificationToken;
 import com.joosangah.userservice.user.repository.UserRepository;
 import com.joosangah.userservice.user.repository.VerificationTokenRepository;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,7 +46,7 @@ public class UserService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .profileImage("profile-image/img_profile-dummy.png")
-                .roles(new HashSet<>(Arrays.asList(ERole.ROLE_USER))).build();
+                .role(ERole.ROLE_USER).build();
         userRepository.save(newUser);
     }
 
@@ -105,8 +103,10 @@ public class UserService {
         userRepository.save(findUser);
     }
 
-    public boolean toggleFollow(User user, String followId) {
+    public boolean toggleFollow(String userId, String followId) {
+        User user = loadUser(userId);
         User follow = loadUser(followId);
+
         if (follow.getFollowerIdList().contains(user.getId())) {
             follow.getFollowerIdList().remove(user.getId());
             userRepository.save(follow);
