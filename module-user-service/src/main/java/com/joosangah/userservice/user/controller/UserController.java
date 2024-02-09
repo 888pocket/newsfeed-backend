@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +33,7 @@ public class UserController {
     private final FileService fileService;
     private final BlackListService blackListService;
 
-    @PostMapping("/signup")
+    @PostMapping("/public/signup")
     public void addUser(@Valid @RequestBody SignupRequest request) {
         // email 중복 검사
         userService.verifyEmail(request.getEmail());
@@ -40,8 +41,8 @@ public class UserController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public UserResponse loadUser(@AuthenticationPrincipal User user) {
+    public UserResponse loadUser(@RequestHeader("X-Authorization-Id") String userId) {
+        User user = userService.loadUser(userId);
         return UserResponse.builder()
                 .name(user.getName())
                 .email(user.getEmail())
@@ -51,21 +52,19 @@ public class UserController {
     }
 
     @PutMapping
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public void modifyUser(@AuthenticationPrincipal User user,
+    public void modifyUser(@RequestHeader("X-Authorization-Id") String userId,
             @Valid @ModelAttribute UserForm request,
             @RequestParam(required = false) MultipartFile profileImageFile) {
-        userService.modifyUser(user.getId(), request, profileImageFile);
+        userService.modifyUser(userId, request, profileImageFile);
     }
 
     @PutMapping("/password")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public void modifyPassword(@AuthenticationPrincipal User user,
+    public void modifyPassword(@RequestHeader("X-Authorization-Id") String userId,
             @Valid @RequestBody PasswordForm request) {
-        userService.modifyPassword(user.getId(), request);
+        userService.modifyPassword(userId, request);
 
         // 모든 기기에서 로그아웃
-        blackListService.addBlacklist(user.getId());
+        blackListService.addBlacklist(userId);
     }
 
     @PostMapping("/verify/request")
@@ -80,14 +79,12 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/follow/toggle")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public boolean followToggle(@AuthenticationPrincipal User user, @PathVariable String userId) {
-        return userService.toggleFollow(user, userId);
+    public boolean followToggle(@RequestHeader("X-Authorization-Id") String userId, @PathVariable String followId) {
+        return userService.toggleFollow(userId, followId);
     }
 
     @GetMapping("/internal")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public User loadInternalUser(@AuthenticationPrincipal User user) {
-        return user;
+    public User loadInternalUser(@RequestHeader("X-Authorization-Id") String userId) {
+        return userService.loadUser(userId);
     }
 }
