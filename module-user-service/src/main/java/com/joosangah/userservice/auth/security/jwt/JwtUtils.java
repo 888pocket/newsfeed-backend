@@ -1,6 +1,8 @@
 package com.joosangah.userservice.auth.security.jwt;
 
+import com.joosangah.userservice.auth.domain.enums.ERole;
 import com.joosangah.userservice.user.domain.entity.User;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -8,6 +10,7 @@ import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import java.util.Date;
+import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,11 +28,15 @@ public class JwtUtils {
     private int jwtExpirationMs;
 
     public String generateJwtToken(User userPrincipal) {
-        return generateTokenFromEmail(userPrincipal.getEmail());
+        return generateTokenFromEmail(userPrincipal.getEmail(), userPrincipal.getRoles());
     }
 
-    public String generateTokenFromEmail(String email) {
+    public String generateTokenFromEmail(String email, Set<ERole> roles) {
+        Claims claims = Jwts.claims().setSubject(email);
+        claims.put("roles", roles);
+
         return Jwts.builder()
+                .setClaims(claims)
                 .setSubject(email)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))

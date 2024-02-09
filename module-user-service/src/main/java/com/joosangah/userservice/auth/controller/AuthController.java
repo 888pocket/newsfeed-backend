@@ -70,7 +70,7 @@ public class AuthController {
                 .map(refreshTokenService::verifyExpiration)
                 .map(RefreshToken::getUser)
                 .map(user -> {
-                    String token = jwtUtils.generateTokenFromEmail(user.getEmail());
+                    String token = jwtUtils.generateTokenFromEmail(user.getEmail(), user.getRoles());
                     refreshTokenService.deleteByToken(requestRefreshToken);
                     RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(
                             user.getId());

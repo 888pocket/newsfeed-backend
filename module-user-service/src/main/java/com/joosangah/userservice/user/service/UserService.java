@@ -1,13 +1,12 @@
 package com.joosangah.userservice.user.service;
 
-import com.joosangah.userservice.mail.MailService;
-import com.joosangah.userservice.common.client.NewsfeedFeignClient;
 import com.joosangah.userservice.auth.domain.enums.ERole;
 import com.joosangah.userservice.auth.security.WebSecurityConfig;
-import com.joosangah.userservice.auth.service.RoleService;
+import com.joosangah.userservice.common.client.NewsfeedFeignClient;
 import com.joosangah.userservice.common.exception.DuplicateException;
 import com.joosangah.userservice.common.util.TokenGenerator;
 import com.joosangah.userservice.file.service.FileService;
+import com.joosangah.userservice.mail.MailService;
 import com.joosangah.userservice.user.domain.dto.request.FollowNewsRequest;
 import com.joosangah.userservice.user.domain.dto.request.PasswordForm;
 import com.joosangah.userservice.user.domain.dto.request.SignupRequest;
@@ -16,7 +15,7 @@ import com.joosangah.userservice.user.domain.entity.User;
 import com.joosangah.userservice.user.domain.entity.VerificationToken;
 import com.joosangah.userservice.user.repository.UserRepository;
 import com.joosangah.userservice.user.repository.VerificationTokenRepository;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +31,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final VerificationTokenRepository verificationTokenRepository;
 
-
-    private final RoleService roleService;
     private final FileService fileService;
     private final MailService mailService;
     private final NewsfeedFeignClient newsfeedFeignClient;
@@ -51,8 +48,7 @@ public class UserService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .profileImage("profile-image/img_profile-dummy.png")
-                .roles(new HashSet<>(Collections.singletonList(
-                        roleService.loadRole(ERole.ROLE_USER.getAuthority())))).build();
+                .roles(new HashSet<>(Arrays.asList(ERole.ROLE_USER))).build();
         userRepository.save(newUser);
     }
 

@@ -1,6 +1,6 @@
 package com.joosangah.userservice.user.domain.entity;
 
-import com.joosangah.userservice.auth.domain.entity.Role;
+import com.joosangah.userservice.auth.domain.enums.ERole;
 import com.joosangah.userservice.common.domain.AuditEntity;
 import com.joosangah.userservice.user.domain.dto.request.UserForm;
 import java.time.LocalDateTime;
@@ -16,7 +16,6 @@ import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.security.core.GrantedAuthority;
@@ -44,14 +43,13 @@ public class User extends AuditEntity implements UserDetails {
     @Field("remember_token")
     private String rememberToken;
 
-    @DBRef
-    private Set<Role> roles;
+    private Set<ERole> roles;
 
     private List<String> followerIdList;
 
     @Builder
     public User(String name, String email, LocalDateTime emailVerifiedAt, String password,
-            String profileImage, String introduction, String rememberToken, Set<Role> roles) {
+            String profileImage, String introduction, String rememberToken, Set<ERole> roles) {
         this.name = name;
         this.email = email;
         this.emailVerifiedAt = emailVerifiedAt;
@@ -66,8 +64,8 @@ public class User extends AuditEntity implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName().getAuthority()))
-                .collect(Collectors.toSet());
+                .map(role -> new SimpleGrantedAuthority(role.getAuthority()))
+                .collect(Collectors.toList());
     }
 
     @Override
