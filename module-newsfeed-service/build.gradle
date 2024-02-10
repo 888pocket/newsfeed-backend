@@ -6,7 +6,7 @@ plugins {
 
 group 'com.joosangah'
 version '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -16,6 +16,7 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
 }
 
 ext {
@@ -38,6 +39,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    implementation 'io.github.resilience4j:resilience4j-spring-boot2'
 }
 
 dependencyManagement {
