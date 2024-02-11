@@ -40,6 +40,8 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'io.github.resilience4j:resilience4j-spring-boot2'
+    implementation('org.springframework.boot:spring-boot-starter-actuator')
+    implementation('org.springframework.boot:spring-boot-starter-aop')
 }
 
 dependencyManagement {

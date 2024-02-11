@@ -1,13 +1,16 @@
 package com.joosangah.newsfeedservice.common.client;
 
 import com.joosangah.newsfeedservice.common.domain.User;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service(value = "backendService")
 @RequiredArgsConstructor
 public class UserFeignService {
+
+    private static final String BACKEND = "backend";
 
     private final UserFeignClient userFeignClient;
 
@@ -15,15 +18,24 @@ public class UserFeignService {
         return userFeignClient.getUser();
     }
 
-    public ResponseEntity<String> case1() {
+    @CircuitBreaker(name = BACKEND, fallbackMethod = "fallback")
+    @Retry(name = BACKEND, fallbackMethod = "fallbackRetry")
+    public String case1() {
         return userFeignClient.case1();
     }
 
-    public ResponseEntity<String> case2() {
+    @Retry(name = BACKEND, fallbackMethod = "fallbackRetry")
+    public String case2() {
         return userFeignClient.case2();
     }
 
-    public ResponseEntity<String> case3() {
+    @CircuitBreaker(name = BACKEND, fallbackMethod = "fallback")
+    @Retry(name = BACKEND, fallbackMethod = "fallbackRetry")
+    public String case3() {
         return userFeignClient.case3();
+    }
+
+    public String fallback(Throwable e) {
+        return "fallback Method from UserFeignService, error is " + e.getMessage();
     }
 }
