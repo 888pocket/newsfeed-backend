@@ -1,4 +1,4 @@
-package com.joosangah.apigateway.exception;
+package com.joosangah.newsfeedservice.common.domain;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;

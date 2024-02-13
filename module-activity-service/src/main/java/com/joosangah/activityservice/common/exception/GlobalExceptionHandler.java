@@ -1,11 +1,12 @@
-package com.joosangah.apigateway.exception;
+package com.joosangah.activityservice.common.exception;
 
+import com.joosangah.activityservice.common.domain.ExceptionResponse;
+import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -37,7 +38,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Object> handleException(AccessDeniedException e) {
         HttpStatus status = HttpStatus.FORBIDDEN;
-        ExceptionResponse response = new ExceptionResponse(e.getMessage(),
+        ExceptionResponse response = new ExceptionResponse(
+                e.getMessage().isBlank() ? "Access denied" : e.getMessage(),
                 status);
         return new ResponseEntity<>(response, status);
     }
@@ -45,7 +47,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<Object> handleException(NoSuchElementException e) {
         HttpStatus status = HttpStatus.NOT_FOUND;
-        ExceptionResponse response = new ExceptionResponse(e.getMessage(),
+        ExceptionResponse response = new ExceptionResponse(
+                e.getMessage().isBlank() ? "No such element" : e.getMessage(),
                 status);
         return new ResponseEntity<>(response, status);
     }
