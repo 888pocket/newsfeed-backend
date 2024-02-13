@@ -2,7 +2,8 @@ package com.joosangah.apigateway.filter;
 
 import com.joosangah.apigateway.payload.TokenUser;
 import com.joosangah.apigateway.util.JwtUtils;
-import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import lombok.Setter;
@@ -51,6 +52,11 @@ public class JwtAuthenticationGatewayFilterFactory extends
                 return chain.filter(exchange);
             }
 
+            // 내부 API 접근 거부
+            if (path.contains("/internal/")) {
+                return onError(response, "access denied", HttpStatus.BAD_REQUEST);
+            }
+
             if (!containsAuthorization(request)) {
                 return onError(response, "missing authorization header", HttpStatus.BAD_REQUEST);
             }
@@ -91,8 +97,18 @@ public class JwtAuthenticationGatewayFilterFactory extends
     }
 
     private Mono<Void> onError(ServerHttpResponse response, String message, HttpStatus status) {
+        LocalDateTime timestamp = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+
         response.setStatusCode(status);
-        DataBuffer buffer = response.bufferFactory().wrap(message.getBytes(StandardCharsets.UTF_8));
+        response.getHeaders().add("Content-Type", "application/json");
+        String errorMessage = String.format("{\"message\":\"[ERROR] %s\","
+                        + "\"status\":\"%s\","
+                        + "\"error\":\"%d\","
+                        + "\"timestamp\":\"%s\""
+                        + "}", message, status.getReasonPhrase(), status.value(),
+                timestamp.format(formatter));
+        DataBuffer buffer = response.bufferFactory().wrap(errorMessage.getBytes());
         return response.writeWith(Mono.just(buffer));
     }
 
