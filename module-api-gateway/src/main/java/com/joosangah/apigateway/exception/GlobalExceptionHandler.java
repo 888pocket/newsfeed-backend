@@ -1,13 +1,13 @@
 package com.joosangah.apigateway.exception;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,41 +16,45 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = {MethodArgumentNotValidException.class})
-    public ResponseEntity<Object> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ResponseEntity<Object> handleMethodArgumentNotValidException(
+            MethodArgumentNotValidException e) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
         BindingResult bindingResult = e.getBindingResult();
-        List<ObjectError> objectErrors = bindingResult.getAllErrors();
+        List<FieldError> fieldErrors = bindingResult.getFieldErrors();
+        List<String> errorMessages = new ArrayList<>();
 
-        ObjectError firstObjectError = objectErrors.get(0);
+        for (FieldError fieldError : fieldErrors) {
+            String errorMessage = fieldError.getField() + ": " + fieldError.getDefaultMessage();
+            errorMessages.add(errorMessage);
+        }
 
-        String fieldName = bindingResult.getFieldErrors().size() > 0 ? bindingResult.getFieldErrors().get(0).getField() : firstObjectError.getObjectName();
+        ExceptionResponse response = new ExceptionResponse(errorMessages.toString(),
+                status);
 
-        String errorMessage = Arrays.stream(firstObjectError.getCodes()).toList().contains("typeMismatch") ?
-                "값이 잘못된 형식입니다" : fieldName + " : " + firstObjectError.getDefaultMessage();
-
-        ExceptionResponse response = new ExceptionResponse("[ERROR] " + errorMessage,
-                HttpStatus.BAD_REQUEST);
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, status);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Object> handleException(AccessDeniedException e) {
-        ExceptionResponse response = new ExceptionResponse("[ERROR] " + e.getMessage(),
-                HttpStatus.FORBIDDEN);
-        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        ExceptionResponse response = new ExceptionResponse(e.getMessage(),
+                status);
+        return new ResponseEntity<>(response, status);
     }
 
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<Object> handleException(NoSuchElementException e) {
-        ExceptionResponse response = new ExceptionResponse("[ERROR] " + e.getMessage(),
-                HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        ExceptionResponse response = new ExceptionResponse(e.getMessage(),
+                status);
+        return new ResponseEntity<>(response, status);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleException(Exception e) {
-        ExceptionResponse response = new ExceptionResponse("[ERROR] " + e.getMessage(),
-                HttpStatus.INTERNAL_SERVER_ERROR);
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
+        ExceptionResponse response = new ExceptionResponse(e.getMessage(),
+                status);
+        return new ResponseEntity<>(response, status);
     }
 }

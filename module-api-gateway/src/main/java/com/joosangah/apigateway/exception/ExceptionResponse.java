@@ -16,7 +16,7 @@ public class ExceptionResponse {
     private final LocalDateTime timestamp;
 
     public ExceptionResponse(String message, HttpStatus httpStatus) {
-        this.message = message;
+        this.message = "[ERROR] " + message;
         this.status = httpStatus.value();
         this.error = httpStatus;
         this.timestamp = LocalDateTime.now();
