@@ -26,15 +26,15 @@
 
 ## 실행하는 법
 
-> ### 빌드하고 실행
+> - 빌드하고 실행
 > ```bash
 > docker compose up --build
 > ```
-> ### 단일 모듈 빌드 후 실행
+> - 단일 모듈 빌드 후 실행
 > ```bash
 > docker compose up --build {service-name}
 > ```
-> ### 빌드하지 않고 실행
+> - 빌드하지 않고 실행
 > ```bash
 > docker compose up
 > ```
@@ -48,11 +48,11 @@ Architecture (MSA).
 
 ## Tech Stack
 
-- Java SDK 17
-- Spring Boot 2.7.9
-- MongoDB
-- Docker
-- Eureka
+> - Java SDK 17
+> - Spring Boot 2.7.9
+> - MongoDB
+> - Docker
+> - Eureka
 
 ## Modules
 
@@ -70,15 +70,15 @@ Architecture (MSA).
 
 ## Run Locally
 
-> ### Build and run
+> - Build and run
 > ```bash
 > docker compose up --build
 > ```
-> ### Build and run single module
+> - Build and run single module
 > ```bash
 > docker compose up --build {service-name}
 > ```
-> ### Run without building
+> - Run without building
 > ```bash
 > docker compose up
 > ```
