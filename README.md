@@ -40,8 +40,7 @@
 > ```
 
 ---
-
-## Description
+# newsfeed-backend
 
 This project is a backend service for a social networking platform implemented using Microservices
 Architecture (MSA).
