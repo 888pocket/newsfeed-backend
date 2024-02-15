@@ -4,4 +4,3 @@ include 'module-activity-service'
 include 'module-newsfeed-service'
 include 'module-api-gateway'
 include 'module-eureka'
-
