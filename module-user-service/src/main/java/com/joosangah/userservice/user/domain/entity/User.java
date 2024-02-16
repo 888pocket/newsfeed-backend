@@ -60,6 +60,10 @@ public class User extends AuditEntity implements UserDetails {
         this.followerIdList = new ArrayList<>();
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Arrays.asList(new SimpleGrantedAuthority(role.getAuthority()));
