@@ -1,7 +1,6 @@
-rootProject.name = 'order-system'
+rootProject.name = 'newsfeed-backend'
 include 'module-user-service'
 include 'module-activity-service'
 include 'module-newsfeed-service'
 include 'module-api-gateway'
 include 'module-eureka'
-

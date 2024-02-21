@@ -18,20 +18,20 @@ public class FeignClientConfiguration {
 
         @Override
         public void apply(RequestTemplate template) {
-            // 현재 요청의 헤더에서 Access Token을 가져와서 Feign 요청에 추가
+            // 현재 요청의 헤더에서 Access Token를 가져와서 Feign 요청에 추가
             String accessToken = extractAccessToken();
             if (accessToken != null) {
-                template.header("Authorization", accessToken);
+                template.header("X-Authorization-Id", accessToken);
             }
         }
 
         private String extractAccessToken() {
-            // 현재 요청의 헤더에서 Access Token을 가져오는 로직
+            // 현재 요청의 헤더에서 Access Token를 가져오는 로직
             ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             if (requestAttributes != null) {
-                // HttpServletRequest를 통해 Access Token을 가져옴
+                // HttpServletRequest를 통해 Access Token를 가져옴
                 HttpServletRequest request = requestAttributes.getRequest();
-                return request.getHeader("Authorization");
+                return request.getHeader("X-Authorization-Id");
             }
             return null;
         }
